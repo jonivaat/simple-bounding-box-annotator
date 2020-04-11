@@ -8,6 +8,7 @@ Python libraries: Numpy, OpenCV and Pillow
 
 ## How to run
 ### annotation tool
+Add images to be annotated to Images-folder. Then run:
 ```
 $ python3 simple_annotation_tool.py
 ```
