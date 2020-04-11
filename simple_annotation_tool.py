@@ -2,8 +2,9 @@
 """
 Created on Wed May 22 16:03:20 2019
 
-@author: Joni
+@author: Joni Väätäinen
 
+Article from Adrian Rosebrock used as reference:
 https://www.pyimagesearch.com/2015/03/09/capturing-mouse-click-events-with-python-and-opencv/
 """
 
@@ -39,7 +40,7 @@ refPt = []
 Pt_collection = []
 rects = [] 
 
-def click_and_crop(event, x, y, flags, param):
+def click_event(event, x, y, flags, param):
     global refPt,Pt_collection, prev_state, prev_state_a
     global image, ann_var, prev_states_a, edit_mode, edit_frame, tmp_rect, drag, corrected_boxes
     
@@ -107,7 +108,6 @@ def click_and_crop(event, x, y, flags, param):
             Pt_collection.append(box[1])
             Pt_collection.append(box[2])
             Pt_collection.append(box[3])
-#            print(box)
             box = np.int32(box)
             image = prev_state.copy() # to hide the drawn "guiding dots"
             prev_state_a = image.copy()
@@ -115,7 +115,6 @@ def click_and_crop(event, x, y, flags, param):
             cv2.drawContours(image,[box],0,(0,0,255),1)
             prev_state = image.copy()
             cv2.imshow("image", image)
-#            corrected_boxes.append(linear_functions(box,image,rect))
             print(f"bbox saved! x: {round(rect[0][0],2)}, y: {round(rect[0][1],2)}, w: {round(rect[1][0],2)}, h: {round(rect[1][1],2)}, angle: {round(rect[2],2)}")
             ann_var = 0
             refPt = []
@@ -131,19 +130,19 @@ def click_and_crop(event, x, y, flags, param):
             cv2.drawContours(image,[box],0,(0,0,255),1)
             cv2.imshow("image", image)
         if event == cv2.EVENT_MOUSEWHEEL:
-            if flags == 7864320: # move wheel away from you
+            if flags == 7864320:
                 tmp_rect = ((tmp_rect[0][0],tmp_rect[0][1]),
                             (tmp_rect[1][0],tmp_rect[1][1]),
                              tmp_rect[2]+2 if (tmp_rect[2]+2) <= 90 else 90)
-            if flags == 15728640: # move wheel away from you
+            if flags == 15728640:
                 tmp_rect = ((tmp_rect[0][0],tmp_rect[0][1]),
                             (tmp_rect[1][0],tmp_rect[1][1]),
                              tmp_rect[2]+4 if (tmp_rect[2]+4) <= 90 else 90)
-            if flags == -7864320: # move wheel away from you
+            if flags == -7864320:
                 tmp_rect = ((tmp_rect[0][0],tmp_rect[0][1]),
                             (tmp_rect[1][0],tmp_rect[1][1]),
                              tmp_rect[2]-2 if tmp_rect[2]-2 >= -90. else -90)
-            if flags == -15728640: # move wheel away from you
+            if flags == -15728640:
                 tmp_rect = ((tmp_rect[0][0],tmp_rect[0][1]),
                             (tmp_rect[1][0],tmp_rect[1][1]),
                              tmp_rect[2]-4 if tmp_rect[2]-4 >= -90. else -90)
@@ -168,7 +167,8 @@ if __name__ == "__main__":
     print("# - in edit mode press '*' or '/' to change width of bbox")
     print("# - in edit mode press '-' or '+' to change heigth of bbox")
     print(f"{'='*90}")
-    # load the image, clone it, and setup the mouse callback function
+    
+    # Main loop. Show images one at a time from the Images-folder
     for i,image in enumerate(images):
         if end: break
         print(f"Viewing image {i+1}/{len(images)}")
@@ -177,12 +177,11 @@ if __name__ == "__main__":
         prev_state_a = image.copy()
         prev_states_a = []
         cv2.namedWindow("image")
-        cv2.setMouseCallback("image", click_and_crop) 
+        cv2.setMouseCallback("image", click_event) 
         t = True
-
-        # keep looping until the 'q' key is pressed
+    
         while True and not end:
-        	# display the image and wait for a keypress
+
             cv2.imshow("image", image)
             key = cv2.waitKey(1) & 0xFF
             
@@ -190,8 +189,6 @@ if __name__ == "__main__":
                 t = False
             elif len(Pt_collection) % 8 != 0:
                 t = True
-            
-#            if key != 255: print(key)
             
             if key == ord("b") and len(refPt) > 0:
                 image = prev_state.copy()
@@ -208,7 +205,7 @@ if __name__ == "__main__":
                 refPt = []
                 print("all reference points deleted!")
          
-            # if the 'r' key is pressed, reset the cropping region
+            # if the 'r' key is pressed, reset all reference points and modifications
             if key == ord("r"):
                 image = clone.copy()
                 prev_state = clone.copy()
@@ -404,12 +401,3 @@ if __name__ == "__main__":
                 
     print("exiting program!")
     cv2.destroyAllWindows()                    
-                    
-#        # if there are two reference points, then crop the region of interest
-#        # from the image and display it
-#        if len(refPt) == 2:
-#        	roi = clone[refPt[0][1]:refPt[1][1], refPt[0][0]:refPt[1][0]]
-#        	cv2.imshow("ROI", roi)
-#        	cv2.waitKey(0)
-         
-        # close all open windows
