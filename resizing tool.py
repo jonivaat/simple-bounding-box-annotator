@@ -8,9 +8,6 @@ Created on Wed May 22 18:14:58 2019
 import argparse
 import os
 import cv2
-import numpy as np
-import matplotlib.pyplot as plt 
-from PIL import Image
 
 # get file path    
 parser = argparse.ArgumentParser()
@@ -34,14 +31,11 @@ img_size = tuple(args.size)
 for img_file in image_files:
     name, ext = os.path.splitext(img_file)
     
-    if (ext == ".png" or ext == ".jpg") and not name.endswith("depth"):
+    if ext == ".png" or ext == ".jpg":
         image = cv2.imread(os.path.join(resize_dir,img_file))
         image_resized = cv2.resize(image,(img_size))
         cv2.imwrite(os.path.join(resized_dir,img_file),image_resized)
-    elif ext == ".tiff":
-        depth_image = Image.open(os.path.join(resize_dir,img_file))
-        depth_image = np.array(depth_image)
-        depth_resized = cv2.resize(depth_image,(img_size))
-        np.save(os.path.join(resized_dir,name),depth_resized)
+    else:
+        raise NotImplementedError("Unsupported extension! {}".format(ext))
         
         
