@@ -31,7 +31,7 @@ img_size = tuple(args.size)
 for img_file in image_files:
     name, ext = os.path.splitext(img_file)
     
-    if ext == ".png" or ext == ".jpg":
+    if ext == ".png" or ext == ".jpg" or ext == ".jpeg":
         image = cv2.imread(os.path.join(resize_dir,img_file))
         image_resized = cv2.resize(image,(img_size))
         cv2.imwrite(os.path.join(resized_dir,img_file),image_resized)
