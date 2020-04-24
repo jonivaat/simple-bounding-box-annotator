@@ -3,7 +3,7 @@ Tested with Ubuntu 18.04 & Windows 10. Python 3.6
 
 ### Minimum requirements
 
-Python libraries: Numpy, OpenCV and Pillow
+Python libraries: Numpy v.1.15.3, OpenCV v.3.4.2 and Pillow v.5.3.0
 
 
 ## How to run
