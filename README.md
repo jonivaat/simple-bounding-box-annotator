@@ -1,4 +1,4 @@
-# Simple OpenCV based bounding box annotation tool
+# Simple OpenCV based bounding box annotation tool for rotated bounding boxes
 Tested with Ubuntu 18.04 & Windows 10. Python 3.6
 
 ### Minimum requirements
